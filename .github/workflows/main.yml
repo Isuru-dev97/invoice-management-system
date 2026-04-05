@@ -11,22 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-    # Check Backend
-    - name: Install Server Dependencies
-      run: |
-        cd server
-        npm install
+      # Check Backend
+      - name: Run Server Check
+        run: |
+          cd server
+          npm install
+          node index.js &
+          SERVER_PID=$!
+          sleep 5
+          kill $SERVER_PID
 
-    # Check Frontend
-    - name: Install Client Dependencies
-      run: |
-        cd client
-        npm install
-        npm run build # This checks if your React code has errors
+      # Check Frontend
+      - name: Install Client Dependencies
+        run: |
+          cd client
+          npm install
+          npm run build
